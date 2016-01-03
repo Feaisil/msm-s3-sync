@@ -55,9 +55,10 @@ do_start()
 	rm -rf /opt/msm/versioning
 	rm -rf /opt/msm/servers
 
-	aws s3 sync s3://$MSM_S3_BUCKET/opt/msm/jars /opt/msm/jars
-	aws s3 sync s3://$MSM_S3_BUCKET/opt/msm/versioning /opt/msm/versioning
-	aws s3 sync s3://$MSM_S3_BUCKET/opt/msm/servers /opt/msm/servers
+	AWS_DEFAULT_REGION=$(aws --output text s3api get-bucket-location --bucket $MSM_S3_BUCKET)
+	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/jars /opt/msm/jars
+	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/versioning /opt/msm/versioning
+	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/servers /opt/msm/servers
 
 	chown -R minecraft:minecraft /opt/msm
 
@@ -81,7 +82,7 @@ do_stop()
     if [ -x $MSM ]; then
         $MSM all logroll
         find /opt/msm/servers -name 'server.log.offset' -exec rm '{}' ';'
-	/usr/local/bin/msm-backup-working-files-to-s3.py
+	/usr/local/bin/msm-s3-backup
     else
         return 2
     fi

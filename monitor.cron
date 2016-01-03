@@ -1,0 +1,2 @@
+0 * * * * minecraft /bin/sh /usr/local/bin/msm-s3-backup
+* * * * * root /bin/bash /usr/local/bin/msm-monitor-server

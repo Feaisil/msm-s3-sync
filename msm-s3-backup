@@ -1,0 +1,25 @@
+#! /bin/sh
+
+if [ -f /etc/environment ]; then
+    while read LINE
+    do
+        export $LINE
+    done < /etc/environment
+fi
+
+SERVER='isil'
+MSM='/usr/local/bin/msm'
+
+$MSM $SERVER save off
+$MSM $SERVER save all
+sleep 5
+$MSM $SERVER worlds todisk
+sleep 5
+
+AWS_DEFAULT_REGION=$(aws --output text s3api get-bucket-location --bucket $MSM_S3_BUCKET)
+aws --region $AWS_DEFAULT_REGION s3 sync /opt/msm/jars s3://$MSM_S3_BUCKET/opt/msm/jars
+aws --region $AWS_DEFAULT_REGION s3 sync /opt/msm/versioning s3://$MSM_S3_BUCKET/opt/msm/versioning
+aws --region $AWS_DEFAULT_REGION s3 sync /opt/msm/servers s3://$MSM_S3_BUCKET/opt/msm/servers
+
+$MSM $SERVER save on
+
