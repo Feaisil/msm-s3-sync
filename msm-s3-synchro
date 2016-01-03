@@ -56,9 +56,11 @@ do_start()
 	rm -rf /opt/msm/servers
 
 	AWS_DEFAULT_REGION=$(aws --output text s3api get-bucket-location --bucket $MSM_S3_BUCKET)
-	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/jars /opt/msm/jars
-	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/versioning /opt/msm/versioning
-	aws --region $AWS_DEFAULT_REGION s3 sync s3://$MSM_S3_BUCKET/opt/msm/servers /opt/msm/servers
+	aws --region $AWS_DEFAULT_REGION s3 cp s3://$MSM_S3_BUCKET/backup.tgz /tmp
+
+	cd /
+	tar xzf /tmp/backup.tgz
+	cd -
 
 	chown -R minecraft:minecraft /opt/msm
 
