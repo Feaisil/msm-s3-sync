@@ -85,7 +85,7 @@ do_stop()
         $MSM all logroll
         find /opt/msm/servers -name 'server.log.offset' -exec rm '{}' ';'
 	/usr/local/bin/msm-s3-backup
-	/usr/local/bin/msm-update-dns.py
+	/usr/local/bin/msm-update-dns.py isil.paris.
     else
         return 2
     fi

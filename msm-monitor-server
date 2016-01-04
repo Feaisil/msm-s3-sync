@@ -1,9 +1,5 @@
 #! /bin/bash
 
-terminate()
-{
-	poweroff
-}
 
 SERVER='isil'
 MSM='/usr/local/bin/msm'
@@ -13,7 +9,7 @@ RETRIES=15
 if [ "$CONNECTED" == "No players are connected." ]; then
 	touch ${COUNT_FILE}
 	echo $(($(cat ${COUNT_FILE} 2>/dev/null)+1)) > ${COUNT_FILE}
-	[[ $(cat ${COUNT_FILE}) -ge ${RETRIES} ]] && terminate
+	[[ $(cat ${COUNT_FILE}) -ge ${RETRIES} ]] && rm ${COUNT_FILE} && /sbin/poweroff 
 else
 	echo 0 > ${COUNT_FILE}
 fi
