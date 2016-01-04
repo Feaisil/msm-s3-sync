@@ -1,0 +1,70 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          msm-manager
+# Required-Start:    $remote_fs $syslog $network $time
+# Required-Stop:     $remote_fs $syslog $network $time
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Start-Before:    msm
+# X-Stop-After:      msm
+# Short-Description: msm manager's monitoring connections
+# Description:       Monitor connections to mc server and start server
+### END INIT INFO
+
+# Author: paris MEULEMAN <me@meuleman.paris>
+#
+
+# Do NOT "set -e"
+
+# Include environment variables from /etc/environment to
+# set AWS variables and MSM_S3_BUCKET.
+#
+# Do this first, so PATH from /etc/environment is
+# overwritten below
+if [ -f /etc/environment ]; then
+    while read LINE
+    do
+        export $LINE
+    done < /etc/environment
+fi
+
+# PATH should only include /usr/* if it runs after the mountnfs.sh script
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+DAEMON=/usr/local/bin/msm-connection-handler.py
+PIDFILE=/var/run/msm-connection-handler.pid
+SCRIPTNAME=/etc/init.d/msm-manager
+
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+
+case "$1" in
+  start)
+	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DAEMON"
+        start_daemon -p $PIDFILE $DAEMON
+	case "$?" in
+		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+	esac
+	;;
+  stop)
+	[ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DAEMON"
+        killproc -p $PIDFILE $DAEMON
+	case "$?" in
+		0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+		2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+	esac
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop}" >&2
+	exit 3
+	;;
+esac
+
+:
