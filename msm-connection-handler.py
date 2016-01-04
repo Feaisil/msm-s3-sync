@@ -42,13 +42,13 @@ if __name__=="__main__":
 			time.sleep(5)
 			continue
 		ip =  lsof.split('->')[1].split(':')[0]
-		broadcast("Welcome to this loby server")
+		broadcast("Welcome to this lobby server")
 		if started:
 			check_server_status()
 		if not started: #Note: check_server_status might update this
 			start_remote_Server()
 		time.sleep(60)
-		broadcast("The server should be available now, the loby will close")
+		broadcast("The server should be available now, the lobby will close")
 		subprocess.check_call([msm,"manager","restart"])
 		time.sleep(60)
 
